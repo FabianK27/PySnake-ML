@@ -1,2 +1,2 @@
 # PySnake-ML
-Snake game with PySFML, attempting to include deep reinforcement learning
+Snake game with PyGame, attempting to include deep reinforcement learning
