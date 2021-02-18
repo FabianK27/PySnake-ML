@@ -58,12 +58,21 @@ class gameLoop:
                 continue  
         if self.snake.collideWithApple(self.apple.posX, self.apple.posY):
             print("COLLISION")
-            self.apple.onCollision()       
+            self.apple.onCollision() 
+
 
     def update(self):
+        if(self.checkBorderCollision()):
+            return
 
         self.board.update()
         self.snake.update()
         self.apple.update()
         pygame.display.update()
         self.clock.tick(constants.FRAMERATELIMITER)
+
+    def checkBorderCollision(self):
+        if(self.snake.hasHitBorder()):
+            print("BORDER COLLISION!")
+            self.isOpen = False
+            return True

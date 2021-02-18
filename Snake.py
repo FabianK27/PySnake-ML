@@ -42,3 +42,9 @@ class snake():
         if (self.head.posX == apple_x and self.head.posY == apple_y):
             return True
         return False
+
+    def hasHitBorder(self):
+        #note: in second cases we subtract borderWIdth = 2 * margin to adjust for snake head width / height
+        if (self.head.posX < constants.margin or self.head.posX > constants.windowWidth - constants.borderWidth or self.head.posY < constants.margin or self.head.posY > constants.windowHeight - constants.borderWidth):
+            return True
+        return False
