@@ -21,6 +21,7 @@ class worldObject:
     def setPosition(self, x, y):
         self.posX = x
         self.posY = y
+    
 
     def getVelocity(self):
         return [self.velX, self.velY]

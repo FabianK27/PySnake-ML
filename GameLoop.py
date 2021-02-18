@@ -21,6 +21,8 @@ class gameLoop:
         #create an apple
         self.apple = apple(self.disp)
 
+        self.foodEaten = False
+
 
 
         self.run()
@@ -58,7 +60,9 @@ class gameLoop:
                 continue  
         if self.snake.collideWithApple(self.apple.posX, self.apple.posY):
             print("COLLISION")
-            self.apple.onCollision() 
+            self.apple.onCollision()
+            self.foodEaten = True
+            self.snake.grow()
 
 
     def update(self):
@@ -66,8 +70,15 @@ class gameLoop:
             return
 
         self.board.update()
-        self.snake.update()
+
+        self.snake.update(headOnly=self.foodEaten)
+        if(self.checkSelfCollision()):
+            return
+
+        self.foodEaten = False
         self.apple.update()
+
+        self.displayScore(self.snake.getLength() - 1)
         pygame.display.update()
         self.clock.tick(constants.FRAMERATELIMITER)
 
@@ -76,3 +87,11 @@ class gameLoop:
             print("BORDER COLLISION!")
             self.isOpen = False
             return True
+    def checkSelfCollision(self):
+        if(self.snake.hasSelfCollided()):
+            print("SELF COLLISION")
+            self.isOpen = False
+            return True
+
+    def displayScore(self, score):
+        self.disp.blit(constants.score_font.render("Score: " + str(score), True, constants.YELLOW), [constants.margin, constants.margin])
