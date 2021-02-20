@@ -5,6 +5,8 @@ from Snake import *
 from Apple import apple
 from GameLoop import *
 
+debug = False
+
 class gameLoopML:
     """Main loop that sets up and runs screen"""
     def __init__(self, windowWidth, windowHeight, title):
@@ -44,10 +46,11 @@ class gameLoopML:
         self.mapIntToInput(input) # trigger appropriate event
         self.eventManager() # execute event
         self.update() # update game
-
-        print("step completed")
+        if debug:
+            print("step completed")
         
         #return gameOver bool and reward
+
         return [not self.isOpen, self.reward()] # for convenience we interpret return value as gameOver so return not isOpen
 
 
@@ -62,23 +65,28 @@ class gameLoopML:
                 pygame.quit()
                 quit()
             if event.type == pygame.USEREVENT + 1:
-                print("UP")
+                if debug:
+                    print("UP")
                 self.snake.changeDirection(constants.direction_UP)
                 continue
             if event.type == pygame.USEREVENT + 2:
-                print("DOWN")
+                if debug:
+                    print("DOWN")
                 self.snake.changeDirection(constants.direction_DOWN)
                 continue
             if event.type == pygame.USEREVENT + 3:
-                print("LEFT")
+                if debug:
+                    print("LEFT")
                 self.snake.changeDirection(constants.direction_LEFT)
                 continue
             if event.type == pygame.USEREVENT + 4:
-                print("RIGHT")
+                if debug:
+                    print("RIGHT")
                 self.snake.changeDirection(constants.direction_RIGHT)
                 continue  
         if self.snake.collideWithApple(self.apple.posX, self.apple.posY):
-            print("COLLISION")
+            if debug:
+                print("COLLISION")
             self.apple.onCollision()
             self.foodEaten = True
             self.snake.grow()
@@ -94,7 +102,7 @@ class gameLoopML:
         if(self.checkSelfCollision()):
             return
 
-        self.foodEaten = False
+        #self.foodEaten = False
         self.apple.update()
 
         self.displayScore(self.snake.getLength() - 3)
@@ -103,12 +111,14 @@ class gameLoopML:
 
     def checkBorderCollision(self):
         if(self.snake.hasHitBorder()):
-            print("BORDER COLLISION!")
+            if debug:
+                print("BORDER COLLISION!")
             self.isOpen = False
             return True
     def checkSelfCollision(self):
         if(self.snake.hasSelfCollided()):
-            print("SELF COLLISION")
+            if debug:
+                print("SELF COLLISION")
             self.isOpen = False
             return True
 
@@ -133,4 +143,9 @@ class gameLoopML:
             print("UNKNOWN INPUT RECEIVED")
 
     def reward(self):
-        return -1
+        if(self.foodEaten):
+            self.foodEaten = False
+            return constants.APPLE_REWARD
+        if(not self.isOpen):
+            return constants.DEATH_REWARD
+        return constants.IDLE_REWARD

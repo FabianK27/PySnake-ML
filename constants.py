@@ -29,3 +29,7 @@ direction_RIGHT = [1, 0]
 pygame.font.init()
 score_font = pygame.font.SysFont("comicsansms", 20)
 
+# ML pysnake consts
+DEATH_REWARD = -5
+IDLE_REWARD = 0
+APPLE_REWARD = 5
