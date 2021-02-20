@@ -19,6 +19,9 @@ class snake():
         self.partList = [self.head]
         self.direction = constants.direction_LEFT
         self.head.setVelocity(self.head.getVelocityAbs() * self.direction[0], self.head.getVelocityAbs() * self.direction[1])
+        #start with 2 body parts
+        self.partList.append(worldObject(self.disp, self.head.posX + constants.snake_size, self.head.posY, constants.GREEN, constants.snake_size, constants.snake_size))
+        self.partList.append(worldObject(self.disp, self.head.posX + 2*constants.snake_size, self.head.posY, constants.GREEN, constants.snake_size, constants.snake_size))
 
     def update(self, headOnly = False):
         self.head.setVelocity(self.head.getVelocityAbs() * self.direction[0], self.head.getVelocityAbs() * self.direction[1])

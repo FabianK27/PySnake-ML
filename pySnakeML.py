@@ -3,8 +3,9 @@ from Board import board
 import constants
 from Snake import *
 from Apple import apple
+from GameLoop import *
 
-class gameLoop:
+class gameLoopML:
     """Main loop that sets up and runs screen"""
     def __init__(self, windowWidth, windowHeight, title):
         pygame.init()
@@ -23,47 +24,57 @@ class gameLoop:
 
         self.foodEaten = False
 
-
-
-        self.run()
-
-
-    def run(self):
-
-
         self.isOpen = True
-        while self.isOpen:
-            self.eventManager()
-            self.update()
 
-        #game over
-        ## could print a gameover screen but for ML we dont want it
-        print("End Score: " + str(len(self.snake.partList) - 3))
-            
-        pygame.quit()
-        quit()
 
+        #create userevents for movement
+        self.inputUP = pygame.event.Event(pygame.USEREVENT +1)
+        self.inputDOWN = pygame.event.Event(pygame.USEREVENT +2)
+        self.inputLEFT = pygame.event.Event(pygame.USEREVENT + 3)
+        self.inputRIGHT = pygame.event.Event(pygame.USEREVENT + 4)
+
+        self.step(2) # first event fixed for now
+        
+        
+
+        
+
+
+    def step(self, input): # input in [0,1,2,3] mapped to key UP, DOWN, LEFT, RIGHT
+        self.mapIntToInput(input) # trigger appropriate event
+        self.eventManager() # execute event
+        self.update() # update game
+
+        print("step completed")
+        
+        #return gameOver bool and reward
+        return [not self.isOpen, self.reward()] # for convenience we interpret return value as gameOver so return not isOpen
 
 
 
     def eventManager(self):
         for event in pygame.event.get():
+            
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 quit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+            if event.type == pygame.USEREVENT + 1:
+                print("UP")
                 self.snake.changeDirection(constants.direction_UP)
                 continue
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+            if event.type == pygame.USEREVENT + 2:
+                print("DOWN")
                 self.snake.changeDirection(constants.direction_DOWN)
                 continue
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+            if event.type == pygame.USEREVENT + 3:
+                print("LEFT")
                 self.snake.changeDirection(constants.direction_LEFT)
                 continue
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+            if event.type == pygame.USEREVENT + 4:
+                print("RIGHT")
                 self.snake.changeDirection(constants.direction_RIGHT)
                 continue  
         if self.snake.collideWithApple(self.apple.posX, self.apple.posY):
@@ -88,7 +99,7 @@ class gameLoop:
 
         self.displayScore(self.snake.getLength() - 3)
         pygame.display.update()
-        self.clock.tick(constants.FRAMERATELIMITER)
+        
 
     def checkBorderCollision(self):
         if(self.snake.hasHitBorder()):
@@ -107,3 +118,19 @@ class gameLoop:
     def gameOverScreen(self):
         self.disp.blit(constants.score_font.render("GAME OVER!", True, constants.YELLOW), [constants.windowWidth/2, constants.windowHeight/2])
         self.disp.blit(constants.score_font.render("Score: " + str(len(self.snake.partList)-3), True, constants.YELLOW), [constants.windowWidth/2 + constants.borderWidth, constants.windowHeight/2 + constants.borderWidth])
+
+    def mapIntToInput(self, intInput):
+        pygame.event.clear()
+        if (intInput == 0):
+            pygame.event.post(self.inputUP)
+        elif (intInput == 1):
+            pygame.event.post(self.inputDOWN)
+        elif (intInput == 2):
+            pygame.event.post(self.inputLEFT)
+        elif (intInput == 3):
+            pygame.event.post(self.inputRIGHT)
+        else:
+            print("UNKNOWN INPUT RECEIVED")
+
+    def reward(self):
+        return -1

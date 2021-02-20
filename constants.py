@@ -1,8 +1,8 @@
 import pygame
 # align sizes to a grid
 
-windowWidth = int(800/15)*15 
-windowHeight = int(600/15)*15 
+windowWidth = int(400/15)*15 
+windowHeight = int(400/15)*15 
 
 borderWidth = 15 * 2 # thickness relative to center, so half of it will be outside of window..
 
@@ -11,7 +11,7 @@ apple_size = 15
 
 margin = borderWidth / 2
 
-FRAMERATELIMITER = 10
+FRAMERATELIMITER = 15
 #colors rgb
 SKYBLUE = (135,206,235)
 BLACK = (0, 0, 0)
@@ -28,3 +28,4 @@ direction_RIGHT = [1, 0]
 #font
 pygame.font.init()
 score_font = pygame.font.SysFont("comicsansms", 20)
+
