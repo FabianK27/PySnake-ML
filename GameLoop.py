@@ -77,6 +77,7 @@ class gameLoop:
         if(self.checkBorderCollision()):
             return
 
+
         self.board.update()
 
         self.snake.update(headOnly=self.foodEaten)

@@ -26,7 +26,8 @@ class snake():
     def update(self, headOnly = False):
         self.head.setVelocity(self.head.getVelocityAbs() * self.direction[0], self.head.getVelocityAbs() * self.direction[1])
         if (headOnly):
-            self.head.update()
+            for part in self.partList:
+                part.update()
             return
         for (i, part) in enumerate(self.partList[-1:0:-1]): #start at end, go until first(exclusive!) in reverse order
             part.setPosition(self.partList[-(i+2)].getPosition()[0], self.partList[-(i+2)].getPosition()[1])

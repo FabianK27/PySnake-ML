@@ -4,6 +4,9 @@ import constants
 from Snake import *
 from Apple import apple
 from GameLoop import *
+import PIL
+import numpy as np
+import torch
 
 debug = False
 
@@ -84,28 +87,31 @@ class gameLoopML:
                     print("RIGHT")
                 self.snake.changeDirection(constants.direction_RIGHT)
                 continue  
+
         if self.snake.collideWithApple(self.apple.posX, self.apple.posY):
             if debug:
                 print("COLLISION")
-            self.apple.onCollision()
+            self.apple.onCollision() # if snake gets large sometimes apple can spawn in snake's body. Maybe thats bad...
             self.foodEaten = True
             self.snake.grow()
 
 
     def update(self):
-        if(self.checkBorderCollision()):
-            return
 
         self.board.update()
 
         self.snake.update(headOnly=self.foodEaten)
         if(self.checkSelfCollision()):
+            pygame.display.update()
+            return
+        if(self.checkBorderCollision()):
+            pygame.display.update()
             return
 
         #self.foodEaten = False
         self.apple.update()
-
-        self.displayScore(self.snake.getLength() - 3)
+ 
+       # self.displayScore(self.snake.getLength() - 3) #dont want that in ml images
         pygame.display.update()
         
 
@@ -149,3 +155,17 @@ class gameLoopML:
         if(not self.isOpen):
             return constants.DEATH_REWARD
         return constants.IDLE_REWARD
+
+    def get_screen(self, color = False):
+        """return the current screen as an array of width x height, either rgb or greyscale"""
+        imgString = pygame.image.tostring(self.disp, 'RGB')
+        img = PIL.Image.frombytes('RGB', (constants.windowWidth, constants.windowHeight), imgString)
+        if (not color):
+            img = img.convert('L') # convert to greyscale
+        img = img.resize((constants.RESIZED_WIDTH, constants.RESIZED_HEIGHT))
+        #if (not color):
+         #   img = img.convert('1') # convert to bi-level image, ??
+         #   img.save("test.png", "PNG")
+        matrix = np.asarray(img.getdata(), dtype=np.float64) / 255 #normalize
+        matrix = matrix.reshape(1, img.size[1], img.size[0])
+        return torch.from_numpy(matrix).unsqueeze(0) # return as torch.tensor with shape (B,C,H,W)

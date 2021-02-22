@@ -30,6 +30,20 @@ pygame.font.init()
 score_font = pygame.font.SysFont("comicsansms", 20)
 
 # ML pysnake consts
-DEATH_REWARD = -5
+DEATH_REWARD = -100
 IDLE_REWARD = 0
-APPLE_REWARD = 5
+APPLE_REWARD = 10
+
+RESIZED_WIDTH = 80
+RESIZED_HEIGHT = 80
+
+#Hyperparams
+num_actions = 4
+scenes_toNet = 2
+replayBufferCapacity = 1000
+num_epochs = 100
+MAX_STEPS = 500
+BATCH_SIZE = 20
+GAMMA = 0.99
+
+headless = True
